@@ -1,0 +1,2366 @@
+/* =========================================================================
+   Design tokens
+   ========================================================================= */
+:root {
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+
+  /* Radii */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-pill: 999px;
+
+  /* Control sizes */
+  --control-h: 28px;
+  --control-h-lg: 32px;
+
+  /* Motion */
+  --transition: 120ms ease;
+
+  /* Colors mapped to VS Code theme */
+  --bg: var(--vscode-sideBar-background, #1e1e1e);
+  --bg-soft: var(--vscode-editor-background, #1e1e1e);
+  --panel: color-mix(in srgb, var(--vscode-foreground) 4%, transparent);
+  --panel-strong: color-mix(in srgb, var(--vscode-foreground) 8%, transparent);
+  --text: var(--vscode-foreground, #cccccc);
+  --muted: var(--vscode-descriptionForeground, #999);
+  --accent: var(--vscode-focusBorder, #007acc);
+  --accent-soft: color-mix(in srgb, var(--vscode-focusBorder) 18%, transparent);
+  --border: var(--vscode-widget-border, var(--vscode-panel-border, rgba(255, 255, 255, 0.1)));
+  --border-strong: var(--vscode-panel-border, color-mix(in srgb, var(--vscode-foreground) 18%, transparent));
+  --danger: var(--vscode-errorForeground, #f14c4c);
+  --warn: var(--vscode-editorWarning-foreground, #d7ba7d);
+  --ok: var(--vscode-charts-green, #23d18b);
+
+  --input-bg: var(--vscode-input-background);
+  --input-fg: var(--vscode-input-foreground);
+  --input-border: var(--vscode-input-border, var(--border));
+
+  --hover: var(--vscode-list-hoverBackground, rgba(255, 255, 255, 0.06));
+  --active: var(--vscode-list-activeSelectionBackground);
+
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.18);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.28);
+  --shadow-lg: 0 14px 32px rgba(0, 0, 0, 0.36);
+
+  /* OpenClaude sunset palette (matches the terminal banner) */
+  --oc-sun-1: rgb(255, 180, 100);
+  --oc-sun-2: rgb(240, 148, 100);
+  --oc-sun-3: rgb(217, 119, 87);
+  --oc-sun-4: rgb(193, 95, 60);
+  --oc-sun-5: rgb(160, 75, 55);
+  --oc-sun-6: rgb(130, 60, 50);
+  --oc-cream: rgb(220, 195, 170);
+}
+
+/* =========================================================================
+   Reset / base
+   ========================================================================= */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: var(--text);
+  /* Transparent so custom panel themes (Island Dark and friends) that
+     paint rounded panels with their own background show through correctly
+     — otherwise the iframe's rectangular fill draws over the theme's
+     bottom-right rounded corner and produces the "square corner" bug. */
+  background: transparent;
+  font: var(--vscode-font-size) var(--vscode-font-family);
+  line-height: 1.45;
+}
+
+button,
+select,
+textarea,
+input {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 0 var(--space-3);
+  height: var(--control-h);
+  background: var(--panel);
+  color: var(--text);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  transition: background-color var(--transition), border-color var(--transition),
+    color var(--transition), opacity var(--transition);
+  white-space: nowrap;
+}
+
+button:hover {
+  background: var(--hover);
+  border-color: var(--border-strong);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+button.primary {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--vscode-button-foreground, #fff);
+  font-weight: 600;
+}
+
+button.primary:hover {
+  background: var(--vscode-button-hoverBackground, var(--accent));
+  border-color: var(--vscode-button-hoverBackground, var(--accent));
+}
+
+button.danger {
+  border-color: color-mix(in srgb, var(--danger) 50%, transparent);
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  color: var(--danger);
+}
+
+button.danger:hover {
+  background: color-mix(in srgb, var(--danger) 22%, transparent);
+}
+
+button.ghost {
+  background: transparent;
+  border-color: transparent;
+  color: var(--muted);
+}
+
+button.ghost:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+button.icon-only {
+  width: var(--control-h);
+  padding: 0;
+}
+
+.svg-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* =========================================================================
+   Custom scrollbars
+   ========================================================================= */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vscode-scrollbarSlider-background, rgba(255, 255, 255, 0.12));
+  border-radius: var(--radius-pill);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vscode-scrollbarSlider-hoverBackground, rgba(255, 255, 255, 0.18));
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: var(--vscode-scrollbarSlider-activeBackground, rgba(255, 255, 255, 0.24));
+}
+
+/* =========================================================================
+   Shell layout
+   ========================================================================= */
+.shell {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  /* Fully flush with the host sidebar. No own background, no border, no
+     border-radius, no internal padding or gap: every inner section
+     (.toolbar, .tabs, .body, .composer) sets its own padding and uses
+     border-top/border-bottom as horizontal dividers instead of card edges.
+     This matches the layout of Cline/Continue/Roo/Copilot Chat. */
+  padding: 0;
+  gap: 0;
+  background: transparent;
+}
+
+/* =========================================================================
+   Toolbar (top: profile + key alert + manage)
+   ========================================================================= */
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  /* Flush with the sidebar — no rounded card, just a header strip with a
+     bottom divider. Background uses --panel (tinted foreground at 4%) so the
+     header reads as slightly distinct from the chat area in any theme. */
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.toolbar > .combobox {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+/* Pulsing alert button: only visible when the active profile has no API key
+   stored. Clicking opens the same flow as "Cadastrar API key" in Modelos. */
+.api-key-alert {
+  flex: 0 0 auto;
+  width: var(--control-h);
+  height: var(--control-h);
+  padding: 0;
+  border-radius: var(--radius-md);
+  border: 1px solid color-mix(in srgb, var(--warn) 60%, transparent);
+  background: color-mix(in srgb, var(--warn) 18%, transparent);
+  color: var(--warn);
+  display: inline-grid;
+  place-items: center;
+  position: relative;
+  animation: api-key-alert-pulse 2.4s ease-in-out infinite;
+}
+
+.api-key-alert:hover {
+  background: color-mix(in srgb, var(--warn) 28%, transparent);
+  border-color: var(--warn);
+}
+
+@keyframes api-key-alert-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 40%, transparent); }
+  50%      { box-shadow: 0 0 0 6px color-mix(in srgb, var(--warn) 0%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .api-key-alert { animation: none; }
+}
+
+/* =========================================================================
+   Custom combobox (replaces native <select>)
+   ========================================================================= */
+.combobox {
+  position: relative;
+  min-width: 0;
+}
+
+.combobox-button {
+  width: 100%;
+  height: var(--control-h);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-md);
+  background: var(--input-bg);
+  color: var(--input-fg);
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  cursor: pointer;
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.combobox-button:hover {
+  border-color: var(--border-strong);
+}
+
+.combobox-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.combobox[data-open='true'] .combobox-button {
+  border-color: var(--accent);
+}
+
+.combobox-label {
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.combobox-label .badge {
+  margin-left: var(--space-2);
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--warn) 18%, transparent);
+  color: var(--warn);
+  font-size: 10px;
+  vertical-align: middle;
+}
+
+.combobox-caret {
+  flex-shrink: 0;
+  opacity: 0.7;
+  transition: transform var(--transition);
+}
+
+.combobox[data-open='true'] .combobox-caret {
+  transform: rotate(180deg);
+}
+
+.combobox-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 10;
+  max-height: 320px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--vscode-dropdown-background, var(--bg-soft));
+  box-shadow: var(--shadow-md);
+  padding: var(--space-1);
+  display: none;
+}
+
+.combobox[data-open='true'] .combobox-menu {
+  display: block;
+}
+
+.combobox-option {
+  width: 100%;
+  height: auto;
+  min-height: var(--control-h-lg);
+  padding: var(--space-2) var(--space-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: center;
+  text-align: left;
+  cursor: pointer;
+}
+
+.combobox-option:hover,
+.combobox-option[aria-selected='true'] {
+  background: var(--hover);
+}
+
+.combobox-option .combobox-option-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+  font-weight: 500;
+}
+
+.combobox-option .combobox-option-meta {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* Divider between profile list and the "Gerenciar modelos" action item.
+   Subtle 1px line that picks up the theme's panel border. */
+.combobox-divider {
+  height: 1px;
+  margin: var(--space-1) var(--space-2);
+  background: var(--border);
+}
+
+/* "+ Editar / cadastrar modelos" — the action option at the bottom of the
+   combobox. Uses the theme's textLink foreground (always WCAG-contrast
+   against background, unlike --accent which can collapse against --hover
+   on some themes). The `!important` on the inner span overrides the
+   inherited `.combobox-option .combobox-option-name { color: var(--text) }`
+   above. */
+.combobox-option-action {
+  color: var(--vscode-textLink-foreground, var(--accent, #3794ff));
+  font-weight: 600;
+}
+
+.combobox-option-action .combobox-option-name {
+  color: var(--vscode-textLink-foreground, var(--accent, #3794ff)) !important;
+  /* Don't ellipsis-truncate the action label — it's a single short string
+     and getting clipped to "..." was making the button look empty. */
+  overflow: visible;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.combobox-option-action:hover {
+  background: var(--vscode-list-activeSelectionBackground, var(--accent-soft));
+  color: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground, var(--accent, #3794ff)));
+}
+
+.combobox-option-action:hover .combobox-option-name {
+  color: var(--vscode-textLink-activeForeground, var(--vscode-textLink-foreground, var(--accent, #3794ff))) !important;
+}
+
+/* Shown only when there are zero profiles cadastrados. Inline note above
+   the action so the user understands why the list is empty. */
+.combobox-empty {
+  padding: var(--space-2) var(--space-3);
+  color: var(--muted);
+  font-size: 11px;
+  font-style: italic;
+}
+
+/* =========================================================================
+   Tabs row
+   ========================================================================= */
+.tabs {
+  display: flex;
+  gap: var(--space-1);
+  min-height: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+  align-items: stretch;
+  padding: 1px 0;
+  background: transparent;
+}
+
+.tabs:empty {
+  display: none;
+}
+
+.tab {
+  flex: 0 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 110px;
+  max-width: 200px;
+  height: var(--control-h);
+  padding: 0 var(--space-2) 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--muted);
+  background: var(--panel);
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+
+.tab.active {
+  color: var(--text);
+  background: var(--bg-soft);
+  border-color: color-mix(in srgb, var(--oc-sun-2) 58%, var(--border-strong));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--oc-sun-2) 28%, transparent);
+}
+
+.tab-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.tab-close {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity var(--transition), background-color var(--transition),
+    color var(--transition);
+}
+
+.tab:hover .tab-close,
+.tab.active .tab-close,
+.tab-close:focus-visible {
+  opacity: 1;
+}
+
+.tab-close:hover {
+  background: color-mix(in srgb, var(--danger) 22%, transparent);
+  color: var(--danger);
+}
+
+/* =========================================================================
+   Body: home OR chat
+   ========================================================================= */
+.body {
+  min-height: 0;
+  /* Explicit height anchors the height: 100% on .home and .chat. Without it,
+     removing the previous border/background made the children collapse and
+     spill out of the visible sidebar area. */
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
+  min-width: 0;
+  /* Flush body: no own border, no border-radius, transparent background — the
+     VS Code sidebar (or any custom-UI theme that paints rounded panels) shows
+     through directly. Matches Cline/Continue/Roo style. */
+  background: transparent;
+  position: relative;
+}
+
+/* Home view ----------------------------------------------------------------*/
+.home {
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--space-5);
+  /* Safe area at the bottom so the history list doesn't slide under the
+     rounded bottom corner that custom-UI themes (Apc, Island Dark…) paint on
+     the panel. Last items stay fully visible / scrollable. */
+  padding-bottom: calc(var(--space-5) + 16px);
+  display: grid;
+  align-content: start;
+  gap: var(--space-5);
+}
+
+.hero {
+  display: grid;
+  gap: var(--space-4);
+  place-items: center;
+  text-align: center;
+  padding: var(--space-5) var(--space-2);
+}
+
+/* Brand: ASCII logo + tagline ---------------------------------------------*/
+.brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  width: 100%;
+  max-width: 100%;
+  /* The pre's font-size is fitted by JS to the panel width — no overflow. */
+}
+
+.brand-logo {
+  /* Inline SVG container. The SVG itself uses a viewBox + preserveAspectRatio,
+     so it scales to whatever width we give the wrapper without ever
+     wrapping or distorting the box-drawing glyphs (they're rectangles,
+     not text). */
+  display: block;
+  width: 100%;
+  max-width: 460px;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 14px rgba(240, 148, 100, 0.22));
+  user-select: none;
+  pointer-events: none;
+}
+
+.brand-logo svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.brand-tagline {
+  margin: 4px 0 0;
+  color: var(--oc-cream);
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+  text-align: center;
+}
+
+.brand-spark {
+  color: var(--oc-sun-2);
+}
+
+/* Start chat button with breathing glow -----------------------------------*/
+.start-chat-wrap {
+  position: relative;
+  display: inline-flex;
+  isolation: isolate;
+  padding: 6px 12px;
+}
+
+.start-chat-glow {
+  position: absolute;
+  inset: -4px -10px;
+  border-radius: 30px;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(240, 148, 100, 0.55) 0%,
+    rgba(217, 119, 87, 0.32) 35%,
+    rgba(193, 95, 60, 0.14) 60%,
+    transparent 80%
+  );
+  filter: blur(14px);
+  z-index: -1;
+  pointer-events: none;
+  animation: start-chat-breath 3.4s ease-in-out infinite;
+}
+
+.start-chat-btn {
+  position: relative;
+  z-index: 1;
+  height: 34px;
+  padding: 0 22px;
+  border-radius: var(--radius-pill);
+  border: 1px solid rgba(240, 148, 100, 0.6);
+  background: linear-gradient(135deg, var(--oc-sun-2) 0%, var(--oc-sun-4) 100%);
+  color: var(--vscode-button-foreground, #fff);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 18px rgba(193, 95, 60, 0.28);
+  transition: transform var(--transition), box-shadow var(--transition),
+    background-color var(--transition), border-color var(--transition);
+}
+
+.start-chat-btn:hover {
+  background: linear-gradient(135deg, rgb(255, 165, 115) 0%, rgb(217, 110, 75) 100%);
+  border-color: rgba(255, 180, 100, 0.75);
+  box-shadow: 0 8px 22px rgba(193, 95, 60, 0.36);
+  transform: translateY(-1px);
+}
+
+.start-chat-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(193, 95, 60, 0.28);
+}
+
+.start-chat-btn:focus-visible {
+  outline: 2px solid var(--oc-sun-2);
+  outline-offset: 3px;
+}
+
+@keyframes start-chat-breath {
+  0%, 100% { opacity: 0.55; transform: scale(0.96); }
+  50%      { opacity: 1;    transform: scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .start-chat-glow {
+    animation: none;
+    opacity: 0.7;
+  }
+}
+
+/* History section ----------------------------------------------------------*/
+.section {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 0 var(--space-1);
+}
+
+.section-title {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.history-list {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.history-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: stretch;
+  gap: var(--space-1);
+}
+
+.history-item {
+  width: 100%;
+  height: auto;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-3);
+  text-align: left;
+  cursor: pointer;
+}
+
+.history-item:hover {
+  background: var(--hover);
+  border-color: var(--border);
+}
+
+.history-item-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.history-item-body {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.history-item-title {
+  color: var(--text);
+  font-weight: 500;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: anywhere;
+}
+
+.history-item-meta {
+  color: var(--muted);
+  font-size: 11px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-item-chip {
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  max-width: 80px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-item-chip-codex {
+  background: color-mix(in srgb, var(--oc-sun-2) 28%, transparent);
+  color: var(--oc-cream);
+  font-weight: 600;
+}
+
+.history-delete {
+  align-self: stretch;
+  height: auto;
+  min-height: 44px;
+  border-color: transparent;
+  background: var(--panel);
+  color: var(--muted);
+}
+
+.history-delete:hover {
+  border-color: color-mix(in srgb, var(--danger) 40%, transparent);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+}
+
+.empty-state {
+  padding: var(--space-4);
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* Skeleton loaders ---------------------------------------------------------*/
+.skeleton {
+  border-radius: var(--radius-md);
+  background: linear-gradient(
+    90deg,
+    var(--panel) 25%,
+    var(--panel-strong) 50%,
+    var(--panel) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+.skeleton-history {
+  height: 44px;
+}
+
+@keyframes skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Chat view ----------------------------------------------------------------*/
+.chat {
+  height: 100%;
+  display: grid;
+  /* messages / chat-controls / composer */
+  grid-template-rows: 1fr auto auto;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  position: relative;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.messages {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  padding: var(--space-2);
+  /* Extra bottom safe area: the chat-controls + composer below already cover
+     the rounded corner of the host panel, so the message stream itself only
+     needs to keep its last bubble from kissing the chat-controls border. */
+  padding-bottom: calc(var(--space-2) + 8px);
+  scroll-behavior: smooth;
+  /* Hide the scrollbar — content is still scrollable via wheel/trackpad/keys,
+     matching the look of Claude/Codex chat panels. */
+  scrollbar-width: none;
+}
+
+.messages::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* =========================================================================
+   Message bubbles
+   ========================================================================= */
+.message {
+  position: relative;
+  max-width: 100%;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: var(--space-2) var(--space-3);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  background: var(--panel);
+}
+
+.message.user {
+  align-self: flex-end;
+  max-width: 88%;
+  /* Use the sunset palette (not --accent) so custom themes that override
+     --vscode-focusBorder can't make the border invisible. The color is
+     part of OpenClaude's brand identity anyway. */
+  border: 1px solid var(--oc-sun-3);
+  background: color-mix(in srgb, var(--oc-sun-3) 12%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--oc-sun-3) 35%, transparent);
+  color: var(--text);
+}
+
+.message.assistant {
+  align-self: flex-start;
+  background: var(--panel-strong);
+}
+
+.message.system,
+.message.tool {
+  align-self: stretch;
+  color: var(--muted);
+  font-size: 11px;
+  background: var(--panel);
+}
+
+.message.error {
+  align-self: stretch;
+  border-color: color-mix(in srgb, var(--danger) 50%, transparent);
+  background: color-mix(in srgb, var(--danger) 12%, transparent);
+  color: var(--danger);
+}
+
+/* Thinking blocks: collapsible chain-of-thought, sits above the answer. */
+.message.thinking {
+  align-self: stretch;
+  padding: 0;
+  border-color: color-mix(in srgb, var(--oc-sun-2) 28%, transparent);
+  background: color-mix(in srgb, var(--oc-sun-6) 12%, transparent);
+}
+
+.message.thinking[open] {
+  background: color-mix(in srgb, var(--oc-sun-6) 18%, transparent);
+}
+
+.thinking-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--oc-cream);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  user-select: none;
+}
+
+.thinking-summary::-webkit-details-marker {
+  display: none;
+}
+
+.thinking-summary::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid currentColor;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  transition: transform var(--transition);
+  flex-shrink: 0;
+}
+
+.message.thinking[open] > .thinking-summary::before {
+  transform: rotate(90deg);
+}
+
+.thinking-summary-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--oc-sun-2);
+  box-shadow: 0 0 6px var(--oc-sun-2);
+  flex-shrink: 0;
+}
+
+.message.thinking:not([open]) .thinking-summary-dot {
+  background: color-mix(in srgb, var(--oc-sun-2) 50%, transparent);
+  box-shadow: none;
+}
+
+/* Soft pulse while streaming the chain-of-thought. */
+.message.thinking[open]:not(.final) .thinking-summary-dot,
+.thinking-summary-label:not(:empty) {
+  /* Pulse handled when message is non-final via the streaming label text. */
+}
+
+.thinking-summary-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+}
+
+.thinking-body {
+  padding: 0 var(--space-3) var(--space-3);
+  color: var(--oc-cream);
+  font-size: 12px;
+  font-style: italic;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  opacity: 0.85;
+}
+
+/* Tool cards: collapsed pill summary, expandable to args+output. */
+.message.tool-card {
+  align-self: stretch;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 5%, transparent);
+  font-size: 12px;
+  color: var(--text);
+}
+
+.message.tool-card.status-error {
+  border-color: color-mix(in srgb, var(--danger) 50%, transparent);
+  background: color-mix(in srgb, var(--danger) 8%, transparent);
+}
+
+.message.tool-card.status-success {
+  border-color: color-mix(in srgb, var(--ok) 35%, transparent);
+}
+
+.tool-card-summary {
+  list-style: none;
+  cursor: pointer;
+  padding: var(--space-2) var(--space-3);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  user-select: none;
+}
+
+.tool-card-summary::-webkit-details-marker {
+  display: none;
+}
+
+.tool-card-summary::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid var(--muted);
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  transition: transform var(--transition);
+  flex-shrink: 0;
+}
+
+.message.tool-card[open] > .tool-card-summary::before {
+  transform: rotate(90deg);
+}
+
+.tool-card-status {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--muted);
+}
+
+.tool-card-status[data-status='running'] {
+  background: var(--oc-sun-2);
+  box-shadow: 0 0 6px var(--oc-sun-2);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.tool-card-status[data-status='success'] {
+  background: var(--ok);
+}
+
+.tool-card-status[data-status='error'] {
+  background: var(--danger);
+  box-shadow: 0 0 6px color-mix(in srgb, var(--danger) 60%, transparent);
+}
+
+.tool-card-name {
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-weight: 600;
+  color: var(--oc-sun-2);
+  flex-shrink: 0;
+}
+
+.tool-card-summary-text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.tool-card-body {
+  padding: 0 var(--space-3) var(--space-3);
+  display: grid;
+  gap: var(--space-2);
+}
+
+.tool-card-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.tool-card-pre {
+  margin: 0;
+  padding: var(--space-2);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 240px;
+  overflow: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--text);
+}
+
+/* GitHub-style "files changed" summary appended at end of assistant turn.
+   Compact list of touched files with +/-N per file. */
+.message.files-changed {
+  align-self: stretch;
+  padding: 0;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+  font-size: 12px;
+  color: var(--text);
+  overflow: hidden;
+}
+
+.files-changed-header {
+  padding: var(--space-2) var(--space-3);
+  background: color-mix(in srgb, var(--text) 6%, transparent);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.files-changed-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+
+.files-changed-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.files-changed-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: 6px var(--space-3);
+  border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.files-changed-row:first-child {
+  border-top: none;
+}
+
+.files-changed-info {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  flex: 1;
+}
+
+.files-changed-dir {
+  color: var(--muted);
+  font-size: 11px;
+  opacity: 0.75;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50%;
+  font-family: var(--vscode-editor-font-family, monospace);
+}
+
+.files-changed-name {
+  color: var(--text);
+  font-weight: 500;
+  font-family: var(--vscode-editor-font-family, monospace);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.files-changed-tag {
+  flex-shrink: 0;
+  margin-left: var(--space-2);
+  padding: 1px 6px;
+  border-radius: var(--radius-pill);
+  background: color-mix(in srgb, var(--ok) 20%, transparent);
+  color: var(--ok);
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.files-changed-stats {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.files-changed-added {
+  color: var(--ok);
+}
+
+.files-changed-removed {
+  color: var(--danger);
+}
+
+/* Viewer mode: read-only Codex/history thread imported into the panel.
+   Composer and chat-controls hidden — user either reads or promotes to
+   a fresh OpenClaude chat with the imported context. */
+.chat.viewer .composer-area,
+.chat.viewer .chat-controls {
+  display: none;
+}
+
+.viewer-banner {
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--oc-sun-2) 40%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--oc-sun-2) 12%, transparent);
+  font-size: 12px;
+  margin-bottom: var(--space-2);
+}
+
+.viewer-banner-text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.viewer-banner-text strong {
+  color: var(--oc-cream);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.viewer-banner-sub {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.4;
+}
+
+.viewer-banner-cta {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, var(--oc-sun-2) 0%, var(--oc-sun-4) 100%);
+  border: 1px solid rgba(240, 148, 100, 0.6);
+  color: var(--vscode-button-foreground, #fff);
+  padding: 0 14px;
+  height: 30px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.viewer-banner-cta:hover {
+  background: linear-gradient(135deg, rgb(255, 165, 115) 0%, rgb(217, 110, 75) 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(193, 95, 60, 0.3);
+}
+
+.message-title {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  margin-bottom: var(--space-1);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.message-body {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.message pre.tool-payload {
+  margin: 2px 0 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  max-width: 100%;
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text);
+  white-space: pre;
+}
+
+.message-copy {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--muted);
+  opacity: 0;
+  transition: opacity var(--transition), background-color var(--transition);
+}
+
+.message:hover .message-copy,
+.message-copy:focus-visible {
+  opacity: 1;
+}
+
+.message-copy:hover {
+  background: var(--hover);
+  border-color: var(--border);
+  color: var(--text);
+}
+
+.message-copy.copied {
+  color: var(--ok);
+  opacity: 1;
+}
+
+/* =========================================================================
+   Permission card
+   ========================================================================= */
+.permission {
+  align-self: stretch;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid color-mix(in srgb, var(--warn) 70%, transparent);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--warn) 14%, transparent);
+  /* Pulse so the card is impossible to miss when the agent is paused
+     waiting for an approve/deny click. */
+  animation: permission-pulse 2.4s ease-in-out infinite;
+  scroll-margin-bottom: var(--space-4);
+}
+
+@keyframes permission-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--warn) 45%, transparent); }
+  50%      { box-shadow: 0 0 0 8px color-mix(in srgb, var(--warn) 0%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .permission { animation: none; }
+}
+
+.permission-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--warn) 22%, transparent);
+  color: var(--warn);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.permission-body {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.permission-title {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.permission-detail {
+  margin: 0;
+  padding: var(--space-2);
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--text) 5%, transparent);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: 11px;
+  color: var(--text);
+  max-height: 160px;
+  overflow-y: auto;
+}
+
+.permission-description {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.permission-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.permission-actions button {
+  width: 100%;
+  min-width: 0;
+  justify-content: center;
+}
+
+/* Permission-prompt action buttons (Approve / Deny / Suggest).
+   Tone follows the active VS Code theme: each background is a `color-mix` of
+   the relevant theme variable with `transparent`, producing a pastel tint that
+   intensifies to the full theme color on hover. Fallback `hsl()` is used only
+   when the theme doesn't define the variable. */
+.permission-actions .permission-approve {
+  background: color-mix(in srgb,
+    var(--vscode-testing-iconPassed, hsl(142, 50%, 50%)) 55%,
+    transparent);
+  border-color: color-mix(in srgb,
+    var(--vscode-testing-iconPassed, hsl(142, 50%, 50%)) 80%,
+    transparent);
+  color: var(--vscode-button-foreground, #fff);
+  font-weight: 600;
+}
+
+.permission-actions .permission-approve:hover {
+  background: var(--vscode-testing-iconPassed, hsl(142, 50%, 50%));
+  border-color: var(--vscode-testing-iconPassed, hsl(142, 50%, 50%));
+}
+
+.permission-actions .permission-deny {
+  background: color-mix(in srgb,
+    var(--vscode-testing-iconFailed, hsl(0, 50%, 55%)) 55%,
+    transparent);
+  border-color: color-mix(in srgb,
+    var(--vscode-testing-iconFailed, hsl(0, 50%, 55%)) 80%,
+    transparent);
+  color: var(--vscode-button-foreground, #fff);
+  font-weight: 600;
+}
+
+.permission-actions .permission-deny:hover {
+  background: var(--vscode-testing-iconFailed, hsl(0, 50%, 55%));
+  border-color: var(--vscode-testing-iconFailed, hsl(0, 50%, 55%));
+}
+
+.permission-actions .permission-suggest {
+  background: color-mix(in srgb,
+    var(--vscode-badge-background, hsl(210, 22%, 60%)) 70%,
+    transparent);
+  border-color: color-mix(in srgb,
+    var(--vscode-badge-background, hsl(210, 22%, 60%)) 90%,
+    transparent);
+  color: var(--vscode-badge-foreground, var(--vscode-button-foreground, #fff));
+  font-weight: 600;
+}
+
+.permission-actions .permission-suggest:hover {
+  background: var(--vscode-badge-background, hsl(210, 22%, 60%));
+  border-color: var(--vscode-badge-background, hsl(210, 22%, 60%));
+}
+
+.permission-suggestion {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--text) 4%, transparent);
+}
+
+.permission-suggestion-input {
+  width: 100%;
+  min-height: 60px;
+  padding: var(--space-2);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  background: var(--input-bg);
+  color: var(--input-fg);
+  font: inherit;
+  resize: vertical;
+}
+
+.permission-suggestion-input:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.permission-suggestion-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.permission-suggestion-actions button {
+  flex: 1;
+}
+
+/* =========================================================================
+   Chat controls (sits between messages and composer — permission mode
+   toggle + thinking toggle, applied live to the running session via
+   control_request)
+   ========================================================================= */
+.chat-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  border-top: 1px solid var(--border-strong);
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+.chat-control-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+}
+
+.permission-btn {
+  height: 22px;
+  padding: 0 10px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.permission-btn:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+
+.permission-btn.active {
+  background: var(--accent-soft);
+  color: var(--text);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.permission-btn[data-mode='plan'].active {
+  background: color-mix(in srgb, var(--oc-sun-2) 22%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--oc-sun-2) 70%, transparent);
+  color: var(--oc-cream);
+}
+
+.permission-btn-danger.active {
+  background: color-mix(in srgb, var(--danger) 22%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--danger) 70%, transparent);
+  color: var(--danger);
+}
+
+/* Operation-mode chip group (single · swarm). Distinct from the
+   permission-mode chips above — these select WHO answers, not HOW. The
+   swarm variant keeps the legacy class name but carries the sunset palette so
+   it reads as the special power mode. */
+.mode-btn {
+  position: relative;
+  height: 22px;
+  padding: 0 10px;
+  border: none;
+  border-radius: var(--radius-pill);
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition);
+}
+
+.mode-btn:disabled {
+  cursor: wait;
+}
+
+.mode-btn.switching {
+  padding-right: 24px;
+}
+
+.mode-btn.switching::after {
+  content: '';
+  position: absolute;
+  right: 8px;
+  width: 10px;
+  height: 10px;
+  border: 1.5px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: mode-switch-spin 0.75s linear infinite;
+}
+
+@keyframes mode-switch-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.mode-btn:hover {
+  color: var(--text);
+  background: var(--hover);
+}
+
+.mode-btn.active {
+  background: var(--accent-soft);
+  color: var(--text);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.mode-btn-ruflo.active {
+  background: color-mix(in srgb, var(--oc-sun-2) 22%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--oc-sun-2) 70%, transparent);
+  color: var(--oc-cream);
+}
+
+.thinking-toggle {
+  height: 24px;
+  padding: 0 10px 0 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.thinking-toggle:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.thinking-toggle-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: background-color var(--transition), box-shadow var(--transition);
+}
+
+.thinking-toggle[aria-pressed='true'] {
+  border-color: color-mix(in srgb, var(--oc-sun-2) 60%, transparent);
+  background: color-mix(in srgb, var(--oc-sun-2) 14%, transparent);
+  color: var(--oc-cream);
+}
+
+.thinking-toggle[aria-pressed='true'] .thinking-toggle-dot {
+  background: var(--oc-sun-2);
+  box-shadow: 0 0 8px var(--oc-sun-2);
+}
+
+.chat-controls-right {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.commands-button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  color: var(--muted);
+  display: inline-grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.commands-button:hover {
+  background: var(--hover);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.commands-button[aria-expanded='true'] {
+  background: var(--accent-soft);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+/* =========================================================================
+   Composer area: composer + floating slash-command menu above it
+   ========================================================================= */
+.composer-area {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  /* No `overflow: hidden` here — the floating slash-menu uses
+     `position: absolute; bottom: calc(100% - 4px)` to anchor itself ABOVE the
+     composer input. With `overflow: hidden` the menu was being clipped and
+     rendered invisible, which is why neither the `/` autocomplete nor the
+     commands button appeared to work. Keep the inner `.composer` overflow
+     handling intact — only this wrapper needs visible overflow. */
+}
+
+.slash-menu {
+  position: absolute;
+  bottom: calc(100% - var(--space-1));
+  left: 0;
+  right: 0;
+  max-height: 280px;
+  overflow-y: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--vscode-dropdown-background, var(--bg-soft));
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-1);
+  z-index: 20;
+  scrollbar-width: thin;
+}
+
+.slash-menu-section {
+  padding: var(--space-1) var(--space-2) 2px;
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.slash-menu-empty {
+  padding: var(--space-3);
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.slash-menu-item {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  gap: var(--space-2);
+  align-items: baseline;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  text-align: left;
+  background: transparent;
+  border: none;
+  color: var(--text);
+  width: 100%;
+}
+
+.slash-menu-item:hover,
+.slash-menu-item.focused {
+  background: var(--hover);
+}
+
+.slash-menu-item.focused {
+  outline: 1px solid var(--accent-soft);
+  outline-offset: -1px;
+}
+
+.slash-menu-item-name {
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--oc-sun-2);
+}
+
+.slash-menu-item-desc {
+  font-size: 11px;
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* =========================================================================
+   Composer (lives inside .chat, anchored at the bottom — grows upward)
+   ========================================================================= */
+.composer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: end;
+  margin: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: var(--space-2);
+  /* Flush composer: only a top divider, no rounded corners, no card shadow.
+     Lets the input row sit visually attached to the bottom edge of the
+     sidebar (or the custom-UI rounded panel from your theme). */
+  border: none;
+  border-top: 1px solid var(--border-strong);
+  border-radius: 0;
+  background: var(--panel);
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.composer:focus-within {
+  border-color: var(--accent);
+}
+
+.composer-input-wrap {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.composer textarea {
+  width: 100%;
+  min-height: 32px;
+  height: 32px;
+  max-height: 200px;
+  padding: var(--space-2);
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  line-height: 1.45;
+  overflow-y: auto;
+  /* Hide the native scrollbar (arrows on Windows) — the textarea still
+     scrolls via wheel/keyboard when content exceeds max-height. */
+  scrollbar-width: none;
+}
+
+.composer textarea::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+.composer textarea::placeholder {
+  color: var(--muted);
+}
+
+.composer-hint {
+  padding: 0 var(--space-2) 2px;
+  color: var(--muted);
+  font-size: 10px;
+  opacity: 0.7;
+}
+
+.send-button {
+  width: var(--control-h-lg);
+  height: var(--control-h-lg);
+  padding: 0;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: var(--vscode-button-foreground, #fff);
+}
+
+.send-button:hover {
+  background: var(--vscode-button-hoverBackground, var(--accent));
+  border-color: var(--vscode-button-hoverBackground, var(--accent));
+}
+
+.send-button:disabled {
+  opacity: 0.5;
+}
+
+/* While streaming, the send button morphs into a red square Stop button. */
+.send-button[data-mode='stop'] {
+  background: var(--danger);
+  border-color: var(--danger);
+}
+
+.send-button[data-mode='stop']:hover {
+  background: color-mix(in srgb, var(--danger) 80%, black);
+  border-color: color-mix(in srgb, var(--danger) 80%, black);
+}
+
+/* =========================================================================
+   Ruflo status pill (top toolbar) — surfaces whether the Ruflo stack is
+   available on this machine. The dot color encodes the deepest active layer:
+     unknown → muted
+     off (nothing detected) → muted
+     installed (CLI present, no MCP) → warn (amber)
+     mcp (CLI + MCP server registered) → accent (theme accent)
+     daemon (CLI + MCP + daemon up) → ok (green) with a soft glow
+   ========================================================================= */
+.ruflo-status-pill {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: var(--control-h);
+  padding: 0 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color var(--transition), color var(--transition), border-color var(--transition);
+}
+
+.ruflo-status-pill:hover {
+  background: var(--hover);
+  color: var(--text);
+  border-color: var(--border-strong);
+}
+
+.ruflo-status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+  transition: background-color var(--transition), box-shadow var(--transition);
+  flex-shrink: 0;
+}
+
+.ruflo-status-pill[data-state='installed'] .ruflo-status-dot {
+  background: var(--warn);
+}
+
+.ruflo-status-pill[data-state='warning'] .ruflo-status-dot {
+  background: var(--danger);
+}
+
+.ruflo-status-pill[data-state='mcp'] .ruflo-status-dot {
+  background: var(--accent);
+}
+
+.ruflo-status-pill[data-state='daemon'] .ruflo-status-dot {
+  background: var(--ok);
+  box-shadow: 0 0 6px var(--ok);
+}
+
+.ruflo-status-pill[data-state='checking'] .ruflo-status-dot {
+  background: var(--muted);
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.ruflo-status-pill[data-state='busy'] .ruflo-status-dot {
+  width: 10px;
+  height: 10px;
+  background: transparent;
+  border: 2px solid color-mix(in srgb, var(--accent) 35%, transparent);
+  border-top-color: var(--accent);
+  animation: ruflo-spin 0.8s linear infinite;
+}
+
+.ruflo-control {
+  position: relative;
+}
+
+.ruflo-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  z-index: 20;
+  width: min(240px, calc(100vw - 24px));
+  display: none;
+  padding: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--vscode-dropdown-background, var(--bg-soft));
+  box-shadow: var(--shadow-md);
+}
+
+.ruflo-control[data-open='true'] .ruflo-menu {
+  display: grid;
+  gap: 2px;
+}
+
+.ruflo-menu-item {
+  width: 100%;
+  justify-content: flex-start;
+  border: none;
+  background: transparent;
+}
+
+.ruflo-menu-item.is-loading::before,
+.ruflo-settings button.is-loading::before {
+  content: '';
+  width: 12px;
+  height: 12px;
+  border: 2px solid color-mix(in srgb, currentColor 35%, transparent);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: ruflo-spin 0.8s linear infinite;
+  flex: 0 0 auto;
+}
+
+@keyframes ruflo-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ruflo-status-pill[data-state='busy'] .ruflo-status-dot,
+  .ruflo-menu-item.is-loading::before,
+  .ruflo-settings button.is-loading::before {
+    animation-duration: 1.6s;
+  }
+}
+
+.ruflo-settings {
+  height: 100%;
+  overflow-y: auto;
+  padding: var(--space-5);
+  padding-bottom: calc(var(--space-5) + 16px);
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+}
+
+.ruflo-settings-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.ruflo-settings-header h2 {
+  margin: 0 0 2px;
+  font-size: 16px;
+  line-height: 1.2;
+}
+
+.ruflo-settings-header p {
+  margin: 0;
+  color: var(--muted);
+}
+
+.ruflo-settings-section {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.ruflo-status-grid {
+  display: grid;
+  gap: var(--space-1);
+}
+
+.ruflo-status-row {
+  min-height: 34px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+}
+
+.ruflo-status-row span {
+  color: var(--muted);
+}
+
+.ruflo-status-row strong {
+  min-width: 0;
+  max-width: 220px;
+  overflow-wrap: anywhere;
+  text-align: right;
+  font-weight: 600;
+}
+
+.ruflo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ruflo-settings-panel {
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+}
+
+.ruflo-settings-panel > div {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.ruflo-settings-panel strong {
+  font-size: 12px;
+}
+
+.ruflo-settings-panel span {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.ruflo-settings-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.ruflo-details {
+  min-height: 88px;
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  color: var(--muted);
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* =========================================================================
+   Skills picker (Rodada 17) — per-session opt-in from
+   ~/.openclaude/skills.library/. Three components:
+     1) Active chips bar above the messages stream
+     2) "+ Skills" button on chat-controls right with a count badge
+     3) Floating menu (above the composer) that lists the library
+   ========================================================================= */
+
+/* (The standalone "active skills chip bar" above the messages was removed in
+   the Rodada 24 follow-up. Active skills are now visible only inside the
+   skills menu itself — sorted to the top with a green ✓ — and the count
+   shows up as a badge on the "+ Skills" toggle. Less visual noise on the
+   chat surface, single source of truth in the picker.) */
+
+/* --- "+ Skills" toggle button (chat-controls-right, beside Thinking) ------ */
+.skills-toggle {
+  height: 24px;
+  padding: 0 10px 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--panel);
+  color: var(--muted);
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.skills-toggle:hover {
+  background: var(--hover);
+  color: var(--text);
+}
+
+.skills-toggle[aria-expanded='true'] {
+  background: var(--accent-soft);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.skills-toggle-icon {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.skills-toggle-badge {
+  display: inline-grid;
+  place-items: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--accent);
+  color: var(--vscode-button-foreground, #fff);
+  font-size: 10px;
+  font-weight: 600;
+  margin-left: 2px;
+}
+
+/* --- Floating menu above the composer, lists the library ----------------- */
+.skills-menu {
+  position: absolute;
+  bottom: calc(100% - var(--space-1));
+  left: 0;
+  right: 0;
+  max-height: 360px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--vscode-dropdown-background, var(--bg-soft));
+  box-shadow: var(--shadow-lg);
+  z-index: 20;
+  overflow: hidden;
+}
+
+.skills-menu-header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2) var(--space-3);
+  border-bottom: 1px solid var(--border);
+  background: var(--panel);
+}
+
+.skills-menu-title {
+  color: var(--muted);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+}
+
+.skills-menu-search {
+  width: 100%;
+  height: 24px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--input-border);
+  border-radius: var(--radius-sm);
+  background: var(--input-bg);
+  color: var(--input-fg);
+  font-size: 12px;
+  outline: none;
+}
+
+.skills-menu-search:focus {
+  border-color: var(--accent);
+}
+
+.skills-menu-list {
+  overflow-y: auto;
+  padding: var(--space-1) 0;
+  scrollbar-width: thin;
+}
+
+.skills-menu-empty {
+  padding: var(--space-3);
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.skills-menu-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--space-2);
+  align-items: center;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.skills-menu-item:hover {
+  background: var(--hover);
+}
+
+/* Active skills sit at the top of the list and get a subtle left accent
+   stripe + tinted background so the eye finds them instantly when scanning
+   the picker. */
+.skills-menu-item.is-active {
+  background: color-mix(in srgb, var(--ok) 8%, transparent);
+  box-shadow: inset 2px 0 0 var(--ok);
+}
+
+.skills-menu-item.is-active:hover {
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+}
+
+.skills-menu-item-main {
+  min-width: 0;
+}
+
+.skills-menu-item-name {
+  font-family: var(--vscode-editor-font-family, monospace);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.skills-menu-item-desc {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.skills-menu-item-add {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--panel);
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.skills-menu-item-add:hover:not(:disabled) {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+
+.skills-menu-item-add.active {
+  color: var(--ok);
+  border-color: color-mix(in srgb, var(--ok) 50%, transparent);
+  background: color-mix(in srgb, var(--ok) 14%, transparent);
+}
+
+.skills-menu-item-add.active:hover {
+  background: color-mix(in srgb, var(--danger) 14%, transparent);
+  border-color: color-mix(in srgb, var(--danger) 50%, transparent);
+  color: var(--danger);
+}
+
+.skills-menu-item-add:disabled {
+  color: var(--ok);
+  cursor: default;
+  opacity: 0.85;
+}

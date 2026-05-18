@@ -1,0 +1,132 @@
+{
+  "name": "openclaude-tools",
+  "displayName": "Leonardo OpenClaude Tools",
+  "description": "Personal VS Code chat view for OpenClaude models, sessions, and history.",
+  "version": "0.0.1",
+  "publisher": "leonardo",
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "extensionKind": [
+    "ui"
+  ],
+  "scripts": {
+    "smoke": "node ./scripts/smoke-backend.js && node ./scripts/smoke-ruflo-service.js && node ./scripts/smoke-openclaude-paths.js && node ./scripts/smoke-session-capabilities.js"
+  },
+  "activationEvents": [
+    "onCommand:leonardo.openClaude",
+    "onCommand:leonardo.newOpenClaudeChat",
+    "onCommand:leonardo.closeOpenClaudeChat",
+    "onCommand:leonardo.manageOpenClaudeModels",
+    "onCommand:leonardo.selectOpenClaudeModel",
+    "onCommand:leonardo.resumeOpenClaudeSession",
+    "onCommand:leonardo.openRufloCli",
+    "onView:leonardo.openClaudeView"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "leonardo.openClaude",
+        "title": "Abrir OpenClaude",
+        "category": "Leonardo",
+        "icon": "$(comment-discussion)"
+      },
+      {
+        "command": "leonardo.newOpenClaudeChat",
+        "title": "Novo chat OpenClaude",
+        "category": "Leonardo",
+        "icon": "$(add)"
+      },
+      {
+        "command": "leonardo.closeOpenClaudeChat",
+        "title": "Fechar chat OpenClaude atual",
+        "category": "Leonardo",
+        "icon": "$(close)"
+      },
+      {
+        "command": "leonardo.manageOpenClaudeModels",
+        "title": "Gerenciar modelos OpenClaude",
+        "category": "Leonardo",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "leonardo.selectOpenClaudeModel",
+        "title": "Selecionar modelo OpenClaude",
+        "category": "Leonardo",
+        "icon": "$(symbol-color)"
+      },
+      {
+        "command": "leonardo.resumeOpenClaudeSession",
+        "title": "Retomar sessao OpenClaude",
+        "category": "Leonardo",
+        "icon": "$(history)"
+      },
+      {
+        "command": "leonardo.openRufloCli",
+        "title": "Abrir Ruflo CLI no terminal",
+        "category": "Leonardo",
+        "icon": "$(terminal)"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "leonardo-openclaude",
+          "title": "OpenClaude",
+          "icon": "media/openclaude.svg"
+        }
+      ]
+    },
+    "views": {
+      "leonardo-openclaude": [
+        {
+          "id": "leonardo.openClaudeView",
+          "name": "OpenClaude",
+          "type": "webview"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "leonardo.openClaude"
+        },
+        {
+          "command": "leonardo.newOpenClaudeChat"
+        },
+        {
+          "command": "leonardo.closeOpenClaudeChat"
+        },
+        {
+          "command": "leonardo.manageOpenClaudeModels"
+        },
+        {
+          "command": "leonardo.selectOpenClaudeModel"
+        },
+        {
+          "command": "leonardo.resumeOpenClaudeSession"
+        },
+        {
+          "command": "leonardo.openRufloCli"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "leonardo.newOpenClaudeChat",
+          "when": "view == leonardo.openClaudeView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "leonardo.resumeOpenClaudeSession",
+          "when": "view == leonardo.openClaudeView",
+          "group": "navigation@2"
+        }
+      ]
+    }
+  },
+  "dependencies": {}
+}
