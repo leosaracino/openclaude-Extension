@@ -12,6 +12,10 @@ const terminals = [];
 let spawnCalls = 0;
 const spawnCommands = [];
 const tempWorkspace = fs.mkdtempSync(path.join(os.tmpdir(), 'openclaude-backend-'));
+const fakeHome = path.join(tempWorkspace, 'user-home');
+const fakeSkillPath = path.join(fakeHome, '.openclaude', 'skills', 'skill-1', 'SKILL.md');
+const fakeConfigPath = path.join(fakeHome, '.openclaude.json');
+const fakeExtensionPath = path.join(tempWorkspace, 'extension-root');
 
 const mockVscode = {
   workspace: {
@@ -176,13 +180,13 @@ const historyStore = {
 };
 
 const skillsStore = {
-  userOpenClaudeDir: 'C:\\Users\\Leonardo\\.openclaude',
+  userOpenClaudeDir: path.join(fakeHome, '.openclaude'),
   listSkills() {
     return [{
       name: 'Skill 1',
       source: 'user',
       description: '',
-      filePath: 'C:\\skill\\SKILL.md'
+      filePath: fakeSkillPath
     }];
   },
   listAgents() {
@@ -202,7 +206,7 @@ const rufloService = {
       daemonRunning: false,
       workspaceCwd: tempWorkspace,
       projectKey: tempWorkspace.replace(/\\/g, '/'),
-      configPath: 'C:\\Users\\Leonardo\\.openclaude.json',
+      configPath: fakeConfigPath,
       daemonWorkersEnabled: '5',
       reason: 'daemonStopped'
     };
@@ -260,7 +264,7 @@ const rufloService = {
 
 const pathCalls = [];
 const openClaudePaths = {
-  deletedHistoryDir: 'C:\\Users\\Leonardo\\.openclaude\\deleted-history',
+  deletedHistoryDir: path.join(fakeHome, '.openclaude', 'deleted-history'),
   ensureUserState() {
     pathCalls.push('ensureUserState');
   },
@@ -274,7 +278,7 @@ const openClaudePaths = {
 
 async function run() {
   const provider = new OpenClaudeViewProvider(
-    { extensionUri: { fsPath: 'C:\\ext' } },
+    { extensionUri: { fsPath: fakeExtensionPath } },
     profileStore,
     historyStore,
     skillsStore,
@@ -354,7 +358,7 @@ async function run() {
     }
   );
   await provider.handleWebviewMessage({ command: 'manageSkills' });
-  assert(openedDocs.includes('C:\\skill\\SKILL.md'));
+  assert(openedDocs.includes(fakeSkillPath));
 
   const localEnv = provider.buildEnv({
     provider: 'openai-compatible',

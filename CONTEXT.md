@@ -6,7 +6,7 @@
 > código.
 
 **Última atualização**: 2026-05-16
-**Localização do projeto**: `C:\Users\Leonardo\.vscode\extensions\leonardo.openclaude-tools-0.0.1\`
+**Localização do projeto**: `<extension-install-dir>`
 **Status**: Pre-Ruflo + Fases 0, 1, Bônus, 2A, 2B, 2C e 2D completas. Validação de controles concluída. Refatoração estrutural inicial concluída e estabilizada com smoke test. A próxima etapa real é a Fase 3 do Ruflo interno.
 
 ---
@@ -15,10 +15,10 @@
 
 ### 1.1 O que é a extensão "Open Claude"
 
-Extensão VSCode personalizada (não-pública) criada pelo usuário Leonardo
-(`leonardosaracino@id.uff.br`). Ela é um **frontend visual** para um CLI
+Extensão VSCode personalizada (não-pública) criada pelo usuário. Ela é um
+**frontend visual** para um CLI
 chamado **`openclaude`** (`openclaude.cmd`), instalado globalmente em
-`C:\Users\Leonardo\AppData\Roaming\npm\openclaude.cmd`.
+`<npm-global-bin-dir>/openclaude.cmd`.
 
 A `openclaude` CLI é uma derivação/fork do Claude Code CLI da Anthropic,
 mas:
@@ -260,7 +260,7 @@ como `claude-flow`. Fix: usar `-p <pkg> <bin>` explícito em 3 lugares.
 ### Rodada 8 — Hotfix: PATH do npm global
 
 Após `npm install -g @claude-flow/cli` (recomendado pelo assistant), o
-binário `claude-flow.cmd` ficou em `C:\Users\Leonardo\AppData\Roaming\npm\`
+binário `claude-flow.cmd` ficou em `<npm-global-bin-dir>`
 mas o detector da extensão não achava — o `execAsync` herdava PATH do
 processo do VSCode que não incluía npm global.
 
@@ -331,7 +331,7 @@ Usuário registrou MCP via `openclaude mcp add claude-flow -- claude-flow mcp st
 mas pill continuou amarelo ("instalado") em vez de azul ("MCP ativo").
 Diagnóstico do output:
 ```
-File modified: C:\Users\Leonardo\.claude.json [project: D:\TCC_oficial\TCC-MOTIVA-APP]
+File modified: `<user-home>/.claude.json` [project: `<workspace-root>`]
 ```
 
 O openclaude registra MCPs **per-project** (scope pelo cwd). O probe

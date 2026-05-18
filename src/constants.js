@@ -1,4 +1,22 @@
-const OPENCLAUDE_CMD = 'C:\\Users\\Leonardo\\AppData\\Roaming\\npm\\openclaude.cmd';
+const fs = require('fs');
+const path = require('path');
+
+function resolveOpenClaudeCommand() {
+  if (process.env.OPENCLAUDE_CMD) {
+    return process.env.OPENCLAUDE_CMD;
+  }
+
+  if (process.platform === 'win32' && process.env.APPDATA) {
+    const npmGlobalCommand = path.join(process.env.APPDATA, 'npm', 'openclaude.cmd');
+    if (fs.existsSync(npmGlobalCommand)) {
+      return npmGlobalCommand;
+    }
+  }
+
+  return 'openclaude';
+}
+
+const OPENCLAUDE_CMD = resolveOpenClaudeCommand();
 const PROFILES_KEY = 'leonardo.openclaude.profiles';
 const ACTIVE_PROFILE_KEY = 'leonardo.openclaude.activeProfileId';
 
@@ -75,6 +93,7 @@ const PROVIDER_KEYS = [
 ];
 
 module.exports = {
+  resolveOpenClaudeCommand,
   OPENCLAUDE_CMD,
   PROFILES_KEY,
   ACTIVE_PROFILE_KEY,

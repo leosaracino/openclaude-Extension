@@ -52,7 +52,7 @@ aprendem com tarefas, têm memória persistente e colaboram via federação.
 **Estrutura (instalada em `~/.vscode/extensions/leonardo.openclaude-tools-0.0.1`):**
 - `package.json` — manifesto VSCode (publisher `leonardo`, viewType `webview`)
 - `extension.js` — backend Node (3.517 linhas), wrapper sobre o CLI `openclaude.cmd`
-  localizado em `C:\Users\Leonardo\AppData\Roaming\npm\openclaude.cmd`
+  localizado em `<npm-global-bin-dir>/openclaude.cmd`
 - `media/webview.css` — UI (1.765 linhas, já usa variáveis `--vscode-*` em design tokens)
 - `media/webview.js` — front-end do webview (1.357 linhas)
 - `media/openclaude.svg` — ícone

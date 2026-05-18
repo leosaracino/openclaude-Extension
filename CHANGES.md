@@ -2,7 +2,7 @@
 
 **Data:** 2026-05-14
 **Escopo:** extensão `leonardo.openclaude-tools-0.0.1` instalada em
-`C:\Users\Leonardo\.vscode\extensions\leonardo.openclaude-tools-0.0.1`.
+`<extension-install-dir>`.
 Não há repositório-fonte separado neste momento — todas as edições foram feitas
 diretamente no bundle instalado.
 
@@ -414,7 +414,7 @@ ENOTEMPTY` são problemas da subdependência `agentic-flow` em paths longos no
 Windows. Inofensivos pro funcionamento, mas chatos. Workarounds:
 - Habilitar Long Paths no Windows
   (`HKLM\SYSTEM\CurrentControlSet\Control\FileSystem\LongPathsEnabled = 1`)
-- Mover o cache npm pra um path curto: `npm config set cache C:\npm-cache`
+- Mover o cache npm pra um path curto: `npm config set cache <short-cache-dir>`
 - Limpar e re-baixar: `npm cache clean --force`
 
 ### `extension.js` — alterações
@@ -450,7 +450,7 @@ encerrar (na verdade voltava ao prompt do cmd).
 ### Diagnósticos
 
 1. **PATH herdado pelo Node child do VSCode** não inclui
-   `C:\Users\Leonardo\AppData\Roaming\npm`. O `execAsync('claude-flow ...')`
+   `<npm-global-bin-dir>`. O `execAsync('claude-flow ...')`
    falhava porque `claude-flow.cmd` não estava na PATH visível ao processo
    spawnado pela extensão — mesmo estando instalado globalmente.
 2. **`claude-flow` não é um chat interativo** — é uma toolkit com
@@ -487,13 +487,13 @@ pill continuou amarelo — não mudou pra azul ("MCP ativo").
 
 O output do `mcp add` deu a dica:
 ```
-File modified: C:\Users\Leonardo\.claude.json [project: D:\TCC_oficial\TCC-MOTIVA-APP]
+File modified: `<user-home>/.claude.json` [project: `<workspace-root>`]
 ```
 
 O openclaude registra MCP servers **per-project**, escopados pelo cwd onde
 o comando rodou. Meu probe `openclaude mcp list` não passava `cwd` — usava
-o cwd herdado do processo do VSCode, que normalmente é `C:\` ou alguma pasta
-diferente do workspace ativo. Resultado: o probe via uma lista de scope
+o cwd herdado do processo do VSCode, que normalmente é uma pasta diferente
+do workspace ativo. Resultado: o probe via uma lista de scope
 diferente do registro que o usuário criou.
 
 ### `extension.js` — alteração
@@ -506,7 +506,7 @@ diferente do registro que o usuário criou.
 ### Como verificar
 
 1. Abra o workspace correto no VSCode (o mesmo onde você rodou
-   `openclaude mcp add` — no seu caso `D:\TCC_oficial\TCC-MOTIVA-APP`).
+   `openclaude mcp add` — no caso correto, `<workspace-root>`).
 2. Reload Window.
 3. Pill deve agora mudar pra **"Ruflo: MCP ativo"** (dot azul).
 4. Click no pill força re-check se precisar.
